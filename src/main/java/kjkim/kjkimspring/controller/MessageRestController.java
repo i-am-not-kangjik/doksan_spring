@@ -1,8 +1,7 @@
 package kjkim.kjkimspring.controller;
 
 import kjkim.kjkimspring.dto.MessageDto;
-import kjkim.kjkimspring.message.Message;
-import kjkim.kjkimspring.message.MessageService;
+import kjkim.kjkimspring.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +14,7 @@ public class MessageRestController {
 
     @Autowired
     private MessageService messageService;
+
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
@@ -33,18 +33,10 @@ public class MessageRestController {
     public List<MessageDto> getSentMessages(@PathVariable String username) {
         return messageService.getSentMessages(username);
     }
+    @PreAuthorize("#username == authentication.principal.username")
+    @GetMapping("/{username}/{messageId}")
+    public MessageDto getMessage(@PathVariable String username, @PathVariable Long messageId) {
+        return messageService.getMessageById(messageId, username);
+    }
 
-
-
-//    @PreAuthorize("#username == authentication.principal.username")
-//    @DeleteMapping("/received/{username}/{messageId}")
-//    public void deleteReceivedMessage(@PathVariable Long messageId, @PathVariable String username) {
-//        messageService.deleteReceivedMessage(messageId, username);
-//    }
-//
-//    @PreAuthorize("#username == authentication.principal.username")
-//    @DeleteMapping("/sent/{username}/{messageId}")
-//    public void deleteSentMessage(@PathVariable Long messageId, @PathVariable String username) {
-//        messageService.deleteSentMessage(messageId, username);
-//    }
 }
